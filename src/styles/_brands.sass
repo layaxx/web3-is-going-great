@@ -1,0 +1,28 @@
+@import _tokens
+
+.brands-timeline
+
+  table
+    background-color: $card-background
+    border: 1px solid $brand-table-border
+    border-collapse: collapse
+
+    th, td
+      border: 1px solid $brand-table-border
+      padding: 5px
+
+    .event .links
+      float: right
+
+      a:not(:last-child)
+        padding-right: 6px
+
+// DARK MODE
+@mixin brandsDarkMode()
+  .brands-timeline
+    table
+      background-color: $dark-card-background
+      border: 1px solid $dark-brand-table-border
+
+    th, td
+      border: 1px solid $dark-brand-table-border

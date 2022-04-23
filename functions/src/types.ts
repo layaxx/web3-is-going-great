@@ -51,3 +51,39 @@ export type ResizeResult = {
   size: number;
   success: boolean;
 };
+
+type BrandEventLinks = {
+  pressRelease?: string;
+  instagram?: string;
+  twitter?: string;
+};
+
+type BrandEvent = {
+  date: string;
+  links: BrandEventLinks;
+};
+
+type AmountAtTime = {
+  amount: number;
+  date: string;
+};
+
+export type BrandEntryType = {
+  name: string;
+  id: string;
+  readableId: string;
+  projectDescription?: string;
+  description?: string;
+  tags?: string[];
+  partner?: string;
+  announcement?: BrandEvent;
+  release?: BrandEvent;
+  cancellation?: BrandEvent;
+  otherLinks?: Link[];
+  mintPrice?: string | number;
+  floor?: AmountAtTime;
+  volumeSold?: AmountAtTime;
+  officialLink?: string;
+  status: string;
+  image?: Image;
+};

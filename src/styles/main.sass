@@ -7,6 +7,7 @@
 @import _fixed-at-bottom
 @import _loading
 @import _popovers
+@import _brands
 
 html
   width: 100%
@@ -136,7 +137,7 @@ div.content-wrapper
     display: block
     min-height: calc(100vh - 340px)
 
-.timeline, .single-timeline-wrapper
+.timeline, .single-timeline-wrapper, .brands-timeline
   position: relative
   width: 90%
   max-width: 1600px
@@ -924,9 +925,11 @@ table.expenses
   @include filtersDarkMode()
   @include fixedDarkMode()
   @include popoversDarkMode()
+  @include brandsDarkMode()
 
 @media (prefers-color-scheme: dark)
   @include mainDarkMode()
   @include filtersDarkMode()
   @include fixedDarkMode()
   @include popoversDarkMode()
+  @include brandsDarkMode()
