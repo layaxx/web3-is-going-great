@@ -6,6 +6,7 @@ describe("WBMJobCompletionError", () => {
     const error = new WBMJobCompletionError("error:bad-gateway");
     expect(error.name).to.equal("WBMJobCompletionError");
     expect(error.message).to.equal("error:bad-gateway");
+    expect(error instanceof WBMJobCompletionError).to.be.true;
   });
 
   it("should properly identify non-retryable errors", () => {

@@ -18,6 +18,8 @@ type Link = {
   linkText: string;
   href: string;
   extraText?: string;
+  archiveHref?: string;
+  archiveTaskQueued?: boolean;
 };
 
 export type Entry = {
