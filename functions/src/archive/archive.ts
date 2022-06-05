@@ -46,6 +46,7 @@ const getRecentCapture = async (url: string): Promise<string | null> => {
       const timestamp = moment(closest.timestamp, "YYYYMMDDhhmmss");
       if (timestamp.isAfter(moment().subtract(1, "day"))) {
         // If the snapshot is less than a day old, no need to make a new one
+        console.log("Recent capture found", closest.url);
         return closest.url;
       }
     }
@@ -66,10 +67,13 @@ const getRecentCapture = async (url: string): Promise<string | null> => {
 const checkJobCompletion = async (jobId: string): Promise<string | false> => {
   const statusResp = await axios.get(`${WAYBACK_SAVE_URL}/status/${jobId}`);
   if (statusResp.data.status === "success") {
+    console.log("Capture success");
     return statusResp.data.timestamp;
   } else if (statusResp.data.status === "error") {
+    console.log("Capture error");
     throw new WBMJobCompletionError(statusResp.data.status_ext);
   }
+  console.log("Capture pending");
   return false;
 };
 
@@ -114,6 +118,7 @@ const capture = async (url: string): Promise<string> => {
 
   const job_id = archiveResp.data.job_id;
 
+  console.log("Capture job:", job_id);
   // Poll for the archive to complete
   const timestamp = await pollForCaptureCompletion(job_id);
 
@@ -133,6 +138,9 @@ const updateEntryWithArchivedUrl = async (
       const links = document.links;
       if (links.length > linkIndex) {
         links[linkIndex].archiveHref = archivedUrl;
+        if ("archiveTaskQueued" in links[linkIndex]) {
+          delete links[linkIndex].archiveTaskQueued;
+        }
         await documentRef.update({ links });
         return { success: true };
       } else {
@@ -200,6 +208,7 @@ export const archive = functions
       archiveUrl,
       req.body
     );
+    console.log(updateResponse);
 
     res.status(200).send(updateResponse);
   });
@@ -212,7 +221,7 @@ const enqueueTask = async (payload: ArchiveRequestBody): Promise<null> => {
     "archive-queue"
   );
   const task = {
-    httpRequest: {
+    appEngineHttpRequest: {
       httpMethod: protos.google.cloud.tasks.v2.HttpMethod.POST,
       relativeUri: "/archive",
       body: Buffer.from(JSON.stringify(payload)).toString("base64"),
@@ -238,11 +247,7 @@ export const enqueueArchiveTasks = functions.firestore
         const linksCopy = JSON.parse(JSON.stringify(afterChangeData.links));
         for (let i = 0; i < afterChangeData.links.length; i++) {
           const link = afterChangeData.links[i];
-          if (
-            !("archiveHref" in link) ||
-            !("archiveTaskQueued" in link) ||
-            !link.archiveTaskQueued
-          ) {
+          if (!link.archiveHref && !link.archiveTaskQueued) {
             // Enqueue task
             const payload = {
               url: link.href,
