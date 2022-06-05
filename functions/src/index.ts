@@ -1,5 +1,5 @@
 import { transformEntryForSearch } from "./algolia";
-import { archive } from "./archive";
+import { archive } from "./archive/archive";
 import { onImageUpload } from "./images";
 import { updateGriftTotal } from "./metadata";
 import { updateRssOnChange } from "./rss";
